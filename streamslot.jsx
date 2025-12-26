@@ -156,7 +156,7 @@ function Dashboard() {
   
   const nbaTeams = [
     { name: 'Hawks', city: 'Atlanta', abbr: 'ATL', primary: '#E03A3E', secondary: '#C1D32F', logo: 'https://luis-ferreras.github.io/streamslot/images/nba/hawks.svg' },
-    { name: 'Celtics', city: 'Boston', abbr: 'BOS', primary: '#007A33', secondary: '#BA9653', logo: 'https://a.espncdn.com/i/teamlogos/nba/500/bos.png' },
+    { name: 'Celtics', city: 'Boston', abbr: 'BOS', primary: '#007A33', secondary: '#BA9653', logo: 'https://luis-ferreras.github.io/streamslot/images/nba/celtics.svg' },
     { name: 'Nets', city: 'Brooklyn', abbr: 'BKN', primary: '#000000', secondary: '#FFFFFF', logo: 'https://a.espncdn.com/i/teamlogos/nba/500/bkn.png' },
     { name: 'Hornets', city: 'Charlotte', abbr: 'CHA', primary: '#1D1160', secondary: '#00788C', logo: 'https://a.espncdn.com/i/teamlogos/nba/500/cha.png' },
     { name: 'Bulls', city: 'Chicago', abbr: 'CHI', primary: '#FFFFFF', secondary: '#000000', logo: 'https://a.espncdn.com/i/teamlogos/nba/500/chi.png' },

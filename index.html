@@ -18,45 +18,35 @@
 <body>
   <div id="root"><div class="loading">Loading StreamSlot...</div></div>
   
-  <!-- Load React FIRST -->
+  <!-- React and Babel from CDN -->
   <script crossorigin src="https://unpkg.com/react@18/umd/react.production.min.js"></script>
   <script crossorigin src="https://unpkg.com/react-dom@18/umd/react-dom.production.min.js"></script>
+  <script src="https://unpkg.com/@babel/standalone/babel.min.js"></script>
   
-  <!-- Wait for React to load, THEN load Babel -->
-  <script>
-    window.addEventListener('load', function() {
-      const babelScript = document.createElement('script');
-      babelScript.src = 'https://unpkg.com/@babel/standalone/babel.min.js';
-      babelScript.onload = function() {
-        loadDashboard();
-      };
-      document.head.appendChild(babelScript);
-    });
-    
-    function loadDashboard() {
-      const dashboardScript = document.createElement('script');
-      dashboardScript.type = 'text/babel';
-      dashboardScript.src = './streamslot.jsx';
-      dashboardScript.onload = function() {
-        setTimeout(renderDashboard, 1000);
-      };
-      document.head.appendChild(dashboardScript);
-    }
-    
-    function renderDashboard() {
-      const renderScript = document.createElement('script');
-      renderScript.type = 'text/babel';
-      renderScript.text = `
-        const DashboardFunc = window.Dashboard || Dashboard;
-        if (DashboardFunc && React && ReactDOM) {
-          const root = ReactDOM.createRoot(document.getElementById('root'));
-          root.render(React.createElement(DashboardFunc));
-        } else {
-          document.getElementById('root').innerHTML = '<div class="loading" style="color: #ff4e00;">Error loading. Please refresh.</div>';
-        }
-      `;
-      document.head.appendChild(renderScript);
-    }
+  <!-- Dashboard Component -->
+  <script type="text/babel">
+    // Load the Dashboard code from external file
+    fetch('./streamslot.jsx')
+      .then(response => response.text())
+      .then(code => {
+        // Execute the code
+        eval(Babel.transform(code, { presets: ['react'] }).code);
+        
+        // Render Dashboard
+        setTimeout(() => {
+          const DashboardFunc = window.Dashboard || Dashboard;
+          if (DashboardFunc) {
+            const root = ReactDOM.createRoot(document.getElementById('root'));
+            root.render(React.createElement(DashboardFunc));
+          } else {
+            document.getElementById('root').innerHTML = '<div class="loading" style="color: #ff4e00;">Dashboard not found</div>';
+          }
+        }, 500);
+      })
+      .catch(err => {
+        console.error('Error loading streamslot.jsx:', err);
+        document.getElementById('root').innerHTML = '<div class="loading" style="color: #ff4e00;">Error loading dashboard</div>';
+      });
   </script>
 </body>
 </html>

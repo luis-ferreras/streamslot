@@ -6,71 +6,57 @@
   <title>StreamSlot - Professional Card Breaking Dashboard</title>
   <meta name="description" content="Free OBS-ready dashboard for trading card box breaks. NBA, MLB, NFL team boards with randomizer and trade machine.">
   
-  <!-- Favicon -->
   <link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><text y='.9em' font-size='90'>🎯</text></svg>">
   
   <style>
-    * {
-      margin: 0;
-      padding: 0;
-      box-sizing: border-box;
-    }
-    
-    body {
-      font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, Cantarell, sans-serif;
-      background: #000000;
-      color: #ffffff;
-    }
-    
-    #root {
-      width: 100%;
-      min-height: 100vh;
-    }
-    
-    /* Loading indicator */
-    .loading {
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      min-height: 100vh;
-      font-size: 1.5rem;
-      color: #6cec35;
-    }
+    * { margin: 0; padding: 0; box-sizing: border-box; }
+    body { font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif; background: #000000; color: #ffffff; }
+    #root { width: 100%; min-height: 100vh; }
+    .loading { display: flex; align-items: center; justify-content: center; min-height: 100vh; font-size: 1.5rem; color: #6cec35; }
   </style>
 </head>
 <body>
-  <div id="root">
-    <div class="loading">Loading StreamSlot...</div>
-  </div>
+  <div id="root"><div class="loading">Loading StreamSlot...</div></div>
   
-  <!-- React from CDN -->
+  <!-- Load React FIRST -->
   <script crossorigin src="https://unpkg.com/react@18/umd/react.production.min.js"></script>
   <script crossorigin src="https://unpkg.com/react-dom@18/umd/react-dom.production.min.js"></script>
-  <script src="https://unpkg.com/@babel/standalone/babel.min.js"></script>
   
-  <!-- Dashboard Component - using absolute path -->
-  <script type="text/babel" src="./streamslot.jsx"></script>
-  <script type="text/babel">
-    console.log("Script executing...");
-    console.log("Dashboard type:", typeof Dashboard);
-    console.log("window.Dashboard type:", typeof window.Dashboard);
-  
-  setTimeout(() => {
-    console.log("After timeout - Dashboard type:", typeof Dashboard);
-    console.log("After timeout - window.Dashboard type:", typeof window.Dashboard);
+  <!-- Wait for React to load, THEN load Babel -->
+  <script>
+    window.addEventListener('load', function() {
+      const babelScript = document.createElement('script');
+      babelScript.src = 'https://unpkg.com/@babel/standalone/babel.min.js';
+      babelScript.onload = function() {
+        loadDashboard();
+      };
+      document.head.appendChild(babelScript);
+    });
     
-    const DashboardFunc = window.Dashboard || Dashboard;
-    
-    if (DashboardFunc) {
-      console.log("Rendering Dashboard...");
-      const root = ReactDOM.createRoot(document.getElementById('root'));
-      root.render(React.createElement(DashboardFunc));
-    } else {
-      console.error("Dashboard not found!");
-      document.getElementById('root').innerHTML = '<div class="loading" style="color: #ff4e00;">Error: Dashboard function not loaded. Check console.</div>';
+    function loadDashboard() {
+      const dashboardScript = document.createElement('script');
+      dashboardScript.type = 'text/babel';
+      dashboardScript.src = './streamslot.jsx';
+      dashboardScript.onload = function() {
+        setTimeout(renderDashboard, 1000);
+      };
+      document.head.appendChild(dashboardScript);
     }
-  }, 2000);
-</script>
-  
+    
+    function renderDashboard() {
+      const renderScript = document.createElement('script');
+      renderScript.type = 'text/babel';
+      renderScript.text = `
+        const DashboardFunc = window.Dashboard || Dashboard;
+        if (DashboardFunc && React && ReactDOM) {
+          const root = ReactDOM.createRoot(document.getElementById('root'));
+          root.render(React.createElement(DashboardFunc));
+        } else {
+          document.getElementById('root').innerHTML = '<div class="loading" style="color: #ff4e00;">Error loading. Please refresh.</div>';
+        }
+      `;
+      document.head.appendChild(renderScript);
+    }
+  </script>
 </body>
 </html>

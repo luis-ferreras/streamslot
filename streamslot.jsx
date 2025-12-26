@@ -7225,3 +7225,6 @@ function HelpContent() {
   );
 }
 
+// Expose Dashboard globally for rendering
+window.Dashboard = Dashboard;
+

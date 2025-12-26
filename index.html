@@ -26,21 +26,40 @@
       width: 100%;
       min-height: 100vh;
     }
+    
+    /* Loading indicator */
+    .loading {
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      min-height: 100vh;
+      font-size: 1.5rem;
+      color: #6cec35;
+    }
   </style>
 </head>
 <body>
-  <div id="root"></div>
+  <div id="root">
+    <div class="loading">Loading StreamSlot...</div>
+  </div>
   
   <!-- React from CDN -->
   <script crossorigin src="https://unpkg.com/react@18/umd/react.production.min.js"></script>
   <script crossorigin src="https://unpkg.com/react-dom@18/umd/react-dom.production.min.js"></script>
   <script src="https://unpkg.com/@babel/standalone/babel.min.js"></script>
   
-  <!-- Dashboard Component -->
-  <script type="text/babel" src="streamslot.jsx"></script>
+  <!-- Dashboard Component - using absolute path -->
+  <script type="text/babel" src="./streamslot.jsx"></script>
   <script type="text/babel">
-    const root = ReactDOM.createRoot(document.getElementById('root'));
-    root.render(<Dashboard />);
+    // Wait for Dashboard to be defined
+    setTimeout(() => {
+      if (typeof Dashboard !== 'undefined') {
+        const root = ReactDOM.createRoot(document.getElementById('root'));
+        root.render(<Dashboard />);
+      } else {
+        document.getElementById('root').innerHTML = '<div class="loading" style="color: #ff4e00;">Error loading dashboard. Please refresh.</div>';
+      }
+    }, 500);
   </script>
 </body>
 </html>

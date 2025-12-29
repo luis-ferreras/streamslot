@@ -703,6 +703,44 @@ const tabs = [
           -moz-appearance: none;
           appearance: none;
         }
+
+        /* Remove Safari default select styling */
+select {
+  -webkit-appearance: none;
+  -moz-appearance: none;
+  appearance: none;
+  background-color: var(--bg-card);
+  background-image: none;
+  border: 1px solid var(--border-color-inner);
+  border-radius: 0;
+  padding: 0.5rem 2rem 0.5rem 0.75rem;
+  color: var(--text-primary);
+  font-size: 0.875rem;
+  cursor: pointer;
+  /* Custom dropdown arrow */
+  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='12' height='12' viewBox='0 0 12 12'%3E%3Cpath fill='%23ffffff' d='M6 9L1 4h10z'/%3E%3E%3C/svg%3E");
+  background-repeat: no-repeat;
+  background-position: right 0.75rem center;
+  background-size: 0.75rem;
+}
+
+select:hover {
+  border-color: var(--border-hover);
+  background-color: var(--bg-card-hover);
+}
+
+select:focus {
+  outline: none;
+  border-color: var(--accent);
+  box-shadow: 0 0 0 2px rgba(254, 104, 255, 0.1);
+}
+
+/* Preserve case for options */
+select option {
+  text-transform: none;
+  background-color: var(--bg-card);
+  color: var(--text-primary);
+}
         
         a {
           color: inherit;

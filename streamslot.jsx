@@ -204,7 +204,7 @@ function Dashboard() {
     { name: 'Dodgers', city: 'Los Angeles', abbr: 'LAD', primary: '#005A9C', secondary: '#EF3E42', logo: 'https://luis-ferreras.github.io/streamslot/images/mlb/dodgers.png' },
     { name: 'Marlins', city: 'Miami', abbr: 'MIA', primary: '#00A3E0', secondary: '#EF3340', logo: 'https://a.espncdn.com/i/teamlogos/mlb/500/mia.png' },
     { name: 'Brewers', city: 'Milwaukee', abbr: 'MIL', primary: '#00244b', secondary: '#ffc500', logo: 'https://a.espncdn.com/i/teamlogos/mlb/500/mil.png' },
-    { name: 'Twins', city: 'Minnesota', abbr: 'MIN', primary: '#002B5C', secondary: '#D31145', logo: 'https://luis-ferreras.github.io/streamslot/images/mlb/twins.png' },
+    { name: 'Twins', city: 'Minnesota', abbr: 'MIN', primary: '#00193F', secondary: '#FFFFFF', logo: 'https://luis-ferreras.github.io/streamslot/images/mlb/twins.png' },
     { name: 'Mets', city: 'New York', abbr: 'NYM', primary: '#002D72', secondary: '#FF5910', logo: 'https://luis-ferreras.github.io/streamslot/images/mlb/mets.png' },
     { name: 'Yankees', city: 'New York', abbr: 'NYY', primary: '#003087', secondary: '#0C2340', logo: 'https://luis-ferreras.github.io/streamslot/images/mlb/yankees.png' },
     { name: 'Athletics', city: 'Oakland', abbr: 'OAK', primary: '#003831', secondary: '#EFB21E', logo: 'https://a.espncdn.com/i/teamlogos/mlb/500/oak.png' },

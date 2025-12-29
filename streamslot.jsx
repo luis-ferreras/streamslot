@@ -190,7 +190,7 @@ function Dashboard() {
   const mlbTeams = [
     { name: 'Diamondbacks', city: 'Arizona', abbr: 'ARI', primary: '#A71930', secondary: '#E3D4AD', logo: 'https://a.espncdn.com/i/teamlogos/mlb/500/ari.png' },
     { name: 'Braves', city: 'Atlanta', abbr: 'ATL', primary: '#CE1141', secondary: '#13274F', logo: 'https://a.espncdn.com/i/teamlogos/mlb/500/atl.png' },
-    { name: 'Orioles', city: 'Baltimore', abbr: 'BAL', primary: '#DF4601', secondary: '#000000', logo: 'https://a.espncdn.com/i/teamlogos/mlb/500/bal.png' },
+    { name: 'Orioles', city: 'Baltimore', abbr: 'BAL', primary: '#FF4400', secondary: '#000000', logo: 'https://a.espncdn.com/i/teamlogos/mlb/500/bal.png' },
     { name: 'Red Sox', city: 'Boston', abbr: 'BOS', primary: '#BD3039', secondary: '#0C2340', logo: 'https://a.espncdn.com/i/teamlogos/mlb/500/bos.png' },
     { name: 'Cubs', city: 'Chicago', abbr: 'CHC', primary: '#0E3386', secondary: '#CC3433', logo: 'https://a.espncdn.com/i/teamlogos/mlb/500/chc.png' },
     { name: 'White Sox', city: 'Chicago', abbr: 'CHW', primary: '#27251F', secondary: '#C4CED4', logo: 'https://a.espncdn.com/i/teamlogos/mlb/500/chw.png' },

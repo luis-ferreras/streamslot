@@ -833,7 +833,7 @@ const tabs = [
           left: 0;
           right: 0;
           z-index: 100;
-          padding: 2rem;
+          padding: 3rem;
           overflow: hidden;
         }
         
@@ -1509,7 +1509,7 @@ const tabs = [
         /* Mobile breakpoint */
         @media (max-width: 48rem) {
           .top-banner {
-            padding: 0.75rem;
+            padding: 2rem 0.75rem;
           }
           
           .top-banner.mobile-hidden {

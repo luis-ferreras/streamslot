@@ -4427,7 +4427,7 @@ function SceneTextContent({ boxName, setBoxName, boxNumber, setBoxNumber, sceneN
                 type="text"
                 value={boxName}
                 onChange={(e) => setBoxName(e.target.value)}
-                placeholder="Enter box name..."
+                ="Enter box name..."
                 disabled={!showBoxName}
                 style={{
                   width: '100%',
@@ -4459,7 +4459,7 @@ function SceneTextContent({ boxName, setBoxName, boxNumber, setBoxNumber, sceneN
                 type="text"
                 value={boxNumber}
                 onChange={(e) => setBoxNumber(e.target.value.replace(/[^0-9]/g, ''))}
-                placeholder="Enter box #..."
+                ="Enter box #..."
                 disabled={!showBoxNumber}
                 style={{
                   width: '100%',
@@ -4491,7 +4491,7 @@ function SceneTextContent({ boxName, setBoxName, boxNumber, setBoxNumber, sceneN
                 type="text"
                 value={sceneNote}
                 onChange={(e) => setSceneNote(e.target.value)}
-                placeholder="HOBBY BOX, GIVEAWAY..."
+                ="HOBBY BOX, GIVEAWAY..."
                 disabled={!showSceneNote}
                 style={{
                   width: '100%',
@@ -4523,7 +4523,7 @@ function SceneTextContent({ boxName, setBoxName, boxNumber, setBoxNumber, sceneN
                 type="text"
                 value={slotCounterText}
                 onChange={(e) => setSlotCounterText(e.target.value)}
-                placeholder="AVAILABLE, SLOTS..."
+                ="AVAILABLE, SLOTS..."
                 disabled={!showSlotCount}
                 style={{
                   width: '100%',
@@ -4909,7 +4909,7 @@ function CustomSlotsContent({ customSlots, addCustomSlots, removeCustomSlot, cle
             <textarea
               value={inputText}
               onChange={(e) => setInputText(e.target.value)}
-              placeholder="Slot One&#10;Slot Two, #e63946&#10;Slot Three, #2a9d8f, #ffffff"
+              ="Slot One&#10;Slot Two, #e63946&#10;Slot Three, #2a9d8f, #ffffff"
               style={{
                 width: '100%',
                 minHeight: '6rem',
@@ -5254,7 +5254,7 @@ function BuyerEntryContent({ teams, teamOrder, purchasedTeams, setPurchasedTeams
                 onFocus={() => setShowSuggestions(true)}
                 onBlur={() => setTimeout(() => setShowSuggestions(false), 200)}
                 onKeyPress={(e) => e.key === 'Enter' && handlePurchase()}
-                placeholder="Enter buyer's name..."
+                ="Enter buyer's name..."
                 autoComplete="off"
                 style={{
                   width: '100%',
@@ -6811,7 +6811,7 @@ function HelpContent() {
       details: [
         { label: 'Sport Selection', text: 'Choose between NBA (30 teams), MLB (30 teams), NFL (32 teams), or Custom mode for your own slots.' },
         { label: 'Columns & Spacing', text: 'Use stepper buttons to adjust columns (2-16) and spacing (0-2) for your preferred layout.' },
-        { label: 'Video Overlay', text: 'Reserve space on your board for a video feed (webcam, product shots, etc). Configure position (row/column) and size (width/height). Appears as a camera emoji placeholder on the board.' },
+        { label: 'Video Overlay', text: 'Reserve space on your board for a video feed (webcam, product shots, etc). Configure position (row/column) and size (width/height). Appears as a camera emoji  on the board.' },
         { label: 'Scene Text', text: 'Customize box name, box number, scene note, and slot counter that appear on your stream.' },
         { label: 'Dark Text Toggle', text: 'Switch between light (default) and dark text for better visibility on different backgrounds.' },
         { label: 'Scene Height', text: 'Drag the handle at the bottom of the scene to resize it vertically (18-64rem).' },
@@ -6934,7 +6934,7 @@ function HelpContent() {
     },
     {
       q: 'What is the Video Overlay feature?',
-      a: 'The Video Overlay in the Layout tab lets you reserve space on your board for video content (webcam, product close-ups, etc). Configure its position and size to fit your layout. The reserved space shows a camera emoji placeholder and won\'t display team slots.'
+      a: 'The Video Overlay in the Layout tab lets you reserve space on your board for video content (webcam, product close-ups, etc). Configure its position and size to fit your layout. The reserved space shows a camera emoji  and won\'t display team slots.'
     },
     {
       q: 'Why do confirmation dialogs appear when I click overlay buttons?',
@@ -6972,7 +6972,7 @@ function HelpContent() {
         <div style={{ display: 'flex', alignItems: 'center', gap: '0.75rem' }}>
           <span style={{ fontSize: '1.25rem' }}>💡</span>
           <p style={{ color: 'var(--text-secondary)', fontSize: '0.875rem', margin: 0, lineHeight: 1.6 }}>
-            Have ideas, suggestions, or found a bug? We'd love to hear from you! Reach out at <a style={{ color: 'var(--accent)' }} href="mailto:streamslotapp@gmail.com"><strong>streamslotapp@gmail.com</strong>
+            Have ideas, suggestions, or found a bug? We'd love to hear from you! Reach out at <strong style={{ color: 'var(--accent)' }}>[email placeholder]</strong>
           </p>
         </div>
       </div>
@@ -7227,4 +7227,3 @@ function HelpContent() {
 
 // Expose Dashboard globally for rendering
 window.Dashboard = Dashboard;
-

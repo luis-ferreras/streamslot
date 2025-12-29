@@ -4459,7 +4459,7 @@ function SceneTextContent({ boxName, setBoxName, boxNumber, setBoxNumber, sceneN
                 type="text"
                 value={boxNumber}
                 onChange={(e) => setBoxNumber(e.target.value.replace(/[^0-9]/g, ''))}
-                ="Enter box #..."
+                placeholder="Enter box #..."
                 disabled={!showBoxNumber}
                 style={{
                   width: '100%',
@@ -4491,7 +4491,7 @@ function SceneTextContent({ boxName, setBoxName, boxNumber, setBoxNumber, sceneN
                 type="text"
                 value={sceneNote}
                 onChange={(e) => setSceneNote(e.target.value)}
-                ="HOBBY BOX, GIVEAWAY..."
+                placeholder="HOBBY BOX, GIVEAWAY..."
                 disabled={!showSceneNote}
                 style={{
                   width: '100%',
@@ -4523,7 +4523,7 @@ function SceneTextContent({ boxName, setBoxName, boxNumber, setBoxNumber, sceneN
                 type="text"
                 value={slotCounterText}
                 onChange={(e) => setSlotCounterText(e.target.value)}
-                ="AVAILABLE, SLOTS..."
+                placeholder="AVAILABLE, SLOTS..."
                 disabled={!showSlotCount}
                 style={{
                   width: '100%',

@@ -4427,7 +4427,7 @@ function SceneTextContent({ boxName, setBoxName, boxNumber, setBoxNumber, sceneN
                 type="text"
                 value={boxName}
                 onChange={(e) => setBoxName(e.target.value)}
-                ="Enter box name..."
+                placeholder="Enter box name..."
                 disabled={!showBoxName}
                 style={{
                   width: '100%',

@@ -214,10 +214,10 @@ function Dashboard() {
     { name: 'Giants', city: 'San Francisco', abbr: 'SF', primary: '#27251F', secondary: '#000000', logo: 'https://a.espncdn.com/i/teamlogos/mlb/500/sf.png' },
     { name: 'Mariners', city: 'Seattle', abbr: 'SEA', primary: '#0C2C56', secondary: '#005C5C', logo: 'https://a.espncdn.com/i/teamlogos/mlb/500/sea.png' },
     { name: 'Cardinals', city: 'St. Louis', abbr: 'STL', primary: '#C41E3A', secondary: '#0C2340', logo: 'https://luis-ferreras.github.io/streamslot/images/mlb/cardinals.png' },
-    { name: 'Rays', city: 'Tampa Bay', abbr: 'TB', primary: '#092C5C', secondary: '#8FBCE6', logo: 'https://a.espncdn.com/i/teamlogos/mlb/500/tb.png' },
-    { name: 'Rangers', city: 'Texas', abbr: 'TEX', primary: '#003278', secondary: '#C0111F', logo: 'https://a.espncdn.com/i/teamlogos/mlb/500/tex.png' },
+    { name: 'Rays', city: 'Tampa Bay', abbr: 'TB', primary: '#092C5C', secondary: '#8FBCE6', logo: 'https://luis-ferreras.github.io/streamslot/images/mlb/rays.png' },
+    { name: 'Rangers', city: 'Texas', abbr: 'TEX', primary: '#003278', secondary: '#C0111F', logo: 'https://luis-ferreras.github.io/streamslot/images/mlb/rangers.png' },
     { name: 'Blue Jays', city: 'Toronto', abbr: 'TOR', primary: '#134A8E', secondary: '#E8291C', logo: 'https://a.espncdn.com/i/teamlogos/mlb/500/tor.png' },
-    { name: 'Nationals', city: 'Washington', abbr: 'WSH', primary: '#AB0003', secondary: '#14225A', logo: 'https://a.espncdn.com/i/teamlogos/mlb/500/wsh.png' },
+    { name: 'Nationals', city: 'Washington', abbr: 'WSH', primary: '#AB0003', secondary: '#14225A', logo: 'https://luis-ferreras.github.io/streamslot/images/mlb/nationals.png' },
   ];
   
   const nflTeams = [

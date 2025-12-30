@@ -31,14 +31,14 @@
 <body>
 
   <div id="mobile-modal" style="display: none; position: fixed; top: 0; left: 0; right: 0; bottom: 0; background: rgba(0, 0, 0, 0.95); z-index: 99999; align-items: center; justify-content: center; padding: 2rem;">
-    <div style="background: #1a1a1a;  border: 2px solid #fe68ff; padding: 2rem; max-width: 400px; text-align: center; font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;">
+    <div style="background: #1a1a1a; padding: 2rem; max-width: 400px; text-align: center;">
       <div style="font-size: 3rem; margin-bottom: 1rem;">💻</div>
       <h2 style="color: #fe68ff; margin: 0 0 1rem 0; font-size: 1.25rem; font-weight: 700;">Desktop Recommended</h2>
       <p style="color: #fff; margin: 0 0 1.5rem 0; font-size: 0.875rem; line-height: 1.5;">
         StreamSlot is optimized for desktop and tablet screens. While it works on mobile, you'll have the best experience on a larger screen.
       </p>
       <button onclick="document.getElementById('mobile-modal').style.display='none'" 
-        style="background: #fe68ff; color: #000; border: none; padding: 0.75rem 1.5rem; border-radius: 4px; font-weight: 700; font-size: 0.875rem; cursor: pointer; text-transform: uppercase; width: 100%;">
+        style="background: #442544; color: #fe68ff; border: none; padding: 0.75rem 1.5rem; border-radius: 4px; font-weight: 700; font-size: 0.875rem; cursor: pointer; text-transform: uppercase; width: 100%;">
         Proceed Anyway
       </button>
     </div>
@@ -53,9 +53,9 @@
   <script crossorigin src="https://unpkg.com/react-dom@18/umd/react-dom.production.min.js"></script>
   <script src="https://unpkg.com/@babel/standalone/babel.min.js"></script>
 
-  <!-- Show modal on screens smaller than 768px (mobile/small tablets) -->
+  <!-- Show modal on screens smaller than 480px (mobile/small tablets) -->
   <script>
-    if (window.innerWidth < 768) {
+    if (window.innerWidth < 480) {
       document.getElementById('mobile-modal').style.display = 'flex';
     }
   </script>

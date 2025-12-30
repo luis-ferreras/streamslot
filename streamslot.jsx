@@ -73,6 +73,34 @@ function Dashboard() {
   const [containerSize, setContainerSize] = useState({ width: 0, height: 0 });
   const sceneRef = useRef(null);
   const [mobileSceneHidden, setMobileSceneHidden] = useState(true); // Hidden by default on mobile
+
+  // AdSense script loader - Load once on component mount
+  useEffect(() => {
+    // Check if AdSense script is already loaded
+    if (!document.querySelector('script[src*="adsbygoogle.js"]')) {
+      const script = document.createElement('script');
+      script.src = 'https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-1453329637761114';
+      script.async = true;
+      script.crossOrigin = 'anonymous';
+      document.head.appendChild(script);
+      
+      // Initialize ad after script loads
+      script.onload = () => {
+        try {
+          (window.adsbygoogle = window.adsbygoogle || []).push({});
+        } catch (err) {
+          console.log('AdSense initialization:', err);
+        }
+      };
+    } else {
+      // Script already loaded, just initialize
+      try {
+        (window.adsbygoogle = window.adsbygoogle || []).push({});
+      } catch (err) {
+        console.log('AdSense initialization:', err);
+      }
+    }
+  }, []); // Empty dependency array = run once on mount
   
   // Handle drag resize
   useEffect(() => {
@@ -3234,7 +3262,23 @@ select option {
 
           
               {/* AdSense code goes here */}
-           
+              <div style={{
+          width: '100%',
+          maxWidth: '1200px',
+          margin: '3rem auto 0 auto',
+          padding: '1.5rem',
+          textAlign: 'center',
+          borderTop: '1px solid var(--border-color)'
+        }}>
+          <ins 
+            className="adsbygoogle"
+            style={{ display: 'block' }}
+            data-ad-client="ca-pub-1453329637761114"
+            data-ad-slot="6488024242"
+            data-ad-format="auto"
+            data-full-width-responsive="true"
+          />
+        </div>
           
             
           

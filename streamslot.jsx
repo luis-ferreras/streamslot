@@ -3228,7 +3228,11 @@ select option {
                 justifyContent: 'center',
                 overflow: 'hidden'
               }}
-            > */}
+            > 
+            </div>
+          </div> */}
+
+          
               {/* AdSense code goes here */}
               <script async src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-1453329637761114" crossorigin="anonymous"></script>
                 <ins 
@@ -3244,8 +3248,7 @@ select option {
                 </script>
 
           
-            </div>
-          </div>
+            
           
           {/* Global Footer */}
           <footer className="global-footer" style={{

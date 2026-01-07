@@ -223,7 +223,7 @@ function Dashboard() {
     { name: 'Cubs', city: 'Chicago', abbr: 'CHC', primary: '#0E3386', secondary: '#CC3433', logo: 'https://a.espncdn.com/i/teamlogos/mlb/500/chc.png' },
     { name: 'White Sox', city: 'Chicago', abbr: 'CHW', primary: '#000000', secondary: '#FFFFFF', logo: 'https://a.espncdn.com/i/teamlogos/mlb/500/chw.png' },
     { name: 'Reds', city: 'Cincinnati', abbr: 'CIN', primary: '#C6011F', secondary: '#000000', logo: './images/mlb/reds.png' },
-    { name: 'Guardians', city: 'Cleveland', abbr: 'CLE', primary: '#00385D', secondary: '#E50022', logo: '.t/images/mlb/guardians.png' },
+    { name: 'Guardians', city: 'Cleveland', abbr: 'CLE', primary: '#00385D', secondary: '#E50022', logo: './images/mlb/guardians.png' },
     { name: 'Rockies', city: 'Colorado', abbr: 'COL', primary: '#000000', secondary: '#33006f', logo: './images/mlb/rockies.png' },
     { name: 'Tigers', city: 'Detroit', abbr: 'DET', primary: '#0C2340', secondary: '#FA4616', logo: './images/mlb/tigers.png' },
     { name: 'Astros', city: 'Houston', abbr: 'HOU', primary: '#002D62', secondary: '#EB6E1F', logo: 'https://a.espncdn.com/i/teamlogos/mlb/500/hou.png' },

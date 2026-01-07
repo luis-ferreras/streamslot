@@ -184,7 +184,7 @@ function Dashboard() {
   
   const nbaTeams = [
     { name: 'Hawks', city: 'Atlanta', abbr: 'ATL', primary: '#C8102E', secondary: '#000000', logo: 'https://a.espncdn.com/i/teamlogos/nba/500/atl.png' },
-    { name: 'Celtics', city: 'Boston', abbr: 'BOS', primary: '#007A33', secondary: '#BA9653', logo: 'https://a.espncdn.com/i/teamlogos/nba/500/bos.png' },
+    { name: 'Celtics', city: 'Boston', abbr: 'BOS', primary: '#088449', secondary: '#BA9653', logo: './images/nba/celtics.png' },
     { name: 'Nets', city: 'Brooklyn', abbr: 'BKN', primary: '#000000', secondary: '#FFFFFF', logo: 'https://a.espncdn.com/i/teamlogos/nba/500/bkn.png' },
     { name: 'Hornets', city: 'Charlotte', abbr: 'CHA', primary: '#1D1160', secondary: '#00788C', logo: 'https://a.espncdn.com/i/teamlogos/nba/500/cha.png' },
     { name: 'Bulls', city: 'Chicago', abbr: 'CHI', primary: '#000000', secondary: '#FFFFFF', logo: 'https://a.espncdn.com/i/teamlogos/nba/500/chi.png' },
@@ -205,7 +205,7 @@ function Dashboard() {
     { name: 'Knicks', city: 'New York', abbr: 'NYK', primary: '#006BB6', secondary: '#F58426', logo: 'https://a.espncdn.com/i/teamlogos/nba/500/ny.png' },
     { name: 'Thunder', city: 'Oklahoma City', abbr: 'OKC', primary: '#007AC1', secondary: '#EF3B24', logo: './images/nba/thunder.png' },
     { name: 'Magic', city: 'Orlando', abbr: 'ORL', primary: '#0077c0', secondary: '#C4ced4', logo: './images/nba/magic.png' },
-    { name: '76ers', city: 'Philadelphia', abbr: 'PHI', primary: '#ed174c', secondary: '#006bb6', logo: './images/nba/sixers.png' },
+    { name: '76ers', city: 'Philadelphia', abbr: 'PHI', primary: '#ed174c', secondary: '#002B5C', logo: './images/nba/sixers.png' },
     { name: 'Suns', city: 'Phoenix', abbr: 'PHX', primary: '#1D1160', secondary: '#000000', logo: 'https://a.espncdn.com/i/teamlogos/nba/500/phx.png' },
     { name: 'Blazers', city: 'Portland', abbr: 'POR', primary: '#000000', secondary: '#E03A3E', logo: 'https://a.espncdn.com/i/teamlogos/nba/500/por.png' },
     { name: 'Kings', city: 'Sacramento', abbr: 'SAC', primary: '#5A2D81', secondary: '#63727A', logo: 'https://a.espncdn.com/i/teamlogos/nba/500/sac.png' },

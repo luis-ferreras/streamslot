@@ -201,7 +201,7 @@ function Dashboard() {
     { name: 'Heat', city: 'Miami', abbr: 'MIA', primary: '#000000', secondary: '#98002E', logo: 'https://a.espncdn.com/i/teamlogos/nba/500/mia.png' },
     { name: 'Bucks', city: 'Milwaukee', abbr: 'MIL', primary: '#00471B', secondary: '#EEE1C6', logo: 'https://a.espncdn.com/i/teamlogos/nba/500/mil.png' },
     { name: 'Wolves', city: 'Minnesota', abbr: 'MIN', primary: '#0C2340', secondary: '#236192', logo: 'https://a.espncdn.com/i/teamlogos/nba/500/min.png' },
-    { name: 'Pelicans', city: 'New Orleans', abbr: 'NOP', primary: '#002B5C', secondary: '#0C2340', logo: './images/nba/pelicans.png' },
+    { name: 'Pelicans', city: 'New Orleans', abbr: 'NOP', primary: '#0C2340', secondary: '#85714D', logo: './images/nba/pelicans.png' },
     { name: 'Knicks', city: 'New York', abbr: 'NYK', primary: '#006BB6', secondary: '#F58426', logo: 'https://a.espncdn.com/i/teamlogos/nba/500/ny.png' },
     { name: 'Thunder', city: 'Oklahoma City', abbr: 'OKC', primary: '#007AC1', secondary: '#EF3B24', logo: './images/nba/thunder.png' },
     { name: 'Magic', city: 'Orlando', abbr: 'ORL', primary: '#0077c0', secondary: '#C4ced4', logo: './images/nba/magic.png' },

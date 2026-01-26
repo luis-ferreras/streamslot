@@ -4050,7 +4050,7 @@ const LayoutContent = React.memo(function LayoutContent({ columns, setColumns, c
       </div>
       
       {/* Video Overlay Box */}
-      <VideoOverlayContent videoOverlay={videoOverlay} setVideoOverlay={setVideoOverlay} columns={columns} boxes={boxes} />
+      <VideoOverlayContent videoOverlay={videoOverlay} setVideoOverlay={setVideoOverlay} columns={columns} boxes={boxes} spacing={spacing} squareBoxes={squareBoxes} containerSize={containerSize} />
       
       {/* Scene Text Box */}
       <SceneTextContent boxName={boxName} setBoxName={setBoxName} boxNumber={boxNumber} setBoxNumber={setBoxNumber} sceneNote={sceneNote} setSceneNote={setSceneNote} showBoxName={showBoxName} setShowBoxName={setShowBoxName} showBoxNumber={showBoxNumber} setShowBoxNumber={setShowBoxNumber} showSceneNote={showSceneNote} setShowSceneNote={setShowSceneNote} showSlotCount={showSlotCount} setShowSlotCount={setShowSlotCount} slotCounterText={slotCounterText} setSlotCounterText={setSlotCounterText} sceneTextSize={sceneTextSize} setSceneTextSize={setSceneTextSize} boxes={boxes} />
@@ -4302,52 +4302,116 @@ const SceneTextContent = React.memo(function SceneTextContent({ boxName, setBoxN
   );
 });
 
-const VideoOverlayContent = React.memo(function VideoOverlayContent({ videoOverlay, setVideoOverlay, columns, boxes }) {
+const VideoOverlayContent = React.memo(function VideoOverlayContent({ videoOverlay, setVideoOverlay, columns, boxes, spacing, squareBoxes, containerSize }) {
   const [manualCollapsed, setManualCollapsed] = useState(false);
-  
+
   // When OFF, always collapsed. When ON, respect manual collapsed state
   const isCollapsed = !videoOverlay.enabled || manualCollapsed;
-  
+  const aspectRatio = videoOverlay.aspectRatio || 'free';
+
   // Calculate constraints based on current columns
   const maxWidth = Math.max(1, columns - 1);
   const maxHeight = 5;
   const maxStartCol = Math.max(1, columns - videoOverlay.width + 1);
-  
+
   // Calculate total rows needed
   const baseRows = Math.ceil(boxes / columns);
   const maxStartRow = Math.max(1, baseRows);
-  
-  // Auto-clamp values when columns change
-  const updateVideoOverlay = (updates) => {
+
+  // Cell dimensions for aspect ratio calculation
+  const gapPx = spacing * 16;
+  const cellW = containerSize.width > 0
+    ? (containerSize.width - (squareBoxes ? 0 : 32) - (columns - 1) * gapPx) / columns
+    : 100;
+  const cellH = squareBoxes ? cellW : 48;
+
+  // Aspect ratio helpers
+  const RATIOS = { 'free': null, '16:9': 16/9, '4:3': 4/3 };
+
+  const computeHeightForWidth = (w, ratioValue) => {
+    if (!ratioValue) return null;
+    const pixelW = w * cellW + Math.max(0, w - 1) * gapPx;
+    const targetPixelH = pixelW / ratioValue;
+    const h = Math.round((targetPixelH + gapPx) / (cellH + gapPx));
+    return Math.max(1, Math.min(h, maxHeight));
+  };
+
+  const computeWidthForHeight = (h, ratioValue) => {
+    if (!ratioValue) return null;
+    const pixelH = h * cellH + Math.max(0, h - 1) * gapPx;
+    const targetPixelW = pixelH * ratioValue;
+    const w = Math.round((targetPixelW + gapPx) / (cellW + gapPx));
+    return Math.max(1, Math.min(w, maxWidth));
+  };
+
+  // Actual pixel ratio for info display
+  const actualPixelW = videoOverlay.width * cellW + Math.max(0, videoOverlay.width - 1) * gapPx;
+  const actualPixelH = videoOverlay.height * cellH + Math.max(0, videoOverlay.height - 1) * gapPx;
+  const actualRatio = actualPixelH > 0 ? actualPixelW / actualPixelH : 0;
+
+  // Auto-clamp values with optional aspect ratio enforcement
+  // drivingDimension: 'width' | 'height' | 'ratio' | undefined
+  const updateVideoOverlay = (updates, drivingDimension) => {
     const newState = { ...videoOverlay, ...updates };
-    
+    const ratioKey = newState.aspectRatio || 'free';
+    const ratioValue = RATIOS[ratioKey];
+
+    // Enforce aspect ratio when a dimension drives the change
+    if (ratioValue && drivingDimension === 'width') {
+      const autoH = computeHeightForWidth(newState.width, ratioValue);
+      if (autoH !== null) newState.height = autoH;
+    } else if (ratioValue && drivingDimension === 'height') {
+      const autoW = computeWidthForHeight(newState.height, ratioValue);
+      if (autoW !== null) newState.width = autoW;
+    } else if (ratioValue && drivingDimension === 'ratio') {
+      // Ratio just changed — adjust height to match current width
+      const autoH = computeHeightForWidth(newState.width, ratioValue);
+      if (autoH !== null) newState.height = autoH;
+    }
+
     // Clamp width first
     newState.width = Math.min(newState.width, columns - 1);
     newState.width = Math.max(1, newState.width);
-    
+
     // Then clamp startCol based on new width
     const newMaxStartCol = columns - newState.width + 1;
     newState.startCol = Math.min(newState.startCol, newMaxStartCol);
     newState.startCol = Math.max(1, newState.startCol);
-    
+
     // Clamp height
     newState.height = Math.min(newState.height, maxHeight);
     newState.height = Math.max(1, newState.height);
-    
+
     // Clamp startRow
     newState.startRow = Math.max(1, newState.startRow);
-    
+
     setVideoOverlay(newState);
   };
-  
+
+  // Corner preset handler
+  const applyPreset = (preset) => {
+    const maxCol = Math.max(1, columns - videoOverlay.width + 1);
+    const maxRow = Math.max(1, baseRows - videoOverlay.height + 1);
+    const centerRow = Math.max(1, Math.round((baseRows - videoOverlay.height) / 2) + 1);
+    const centerCol = Math.max(1, Math.round((columns - videoOverlay.width) / 2) + 1);
+
+    const positions = {
+      'tl': { startRow: 1, startCol: 1 },
+      'tr': { startRow: 1, startCol: maxCol },
+      'c':  { startRow: centerRow, startCol: centerCol },
+      'bl': { startRow: maxRow, startCol: 1 },
+      'br': { startRow: maxRow, startCol: maxCol },
+    };
+
+    updateVideoOverlay(positions[preset]);
+  };
+
   // Handle enable toggle - expand when turning ON
   const handleEnableToggle = (enabled) => {
-    if (enabled) {
-      setManualCollapsed(false); // Expand when turning ON
-    }
+    if (enabled) setManualCollapsed(false);
     updateVideoOverlay({ enabled });
   };
-  
+
   // Calculate slots occupied
   const slotsOccupied = videoOverlay.width * videoOverlay.height;
   
@@ -4418,16 +4482,16 @@ const VideoOverlayContent = React.memo(function VideoOverlayContent({ videoOverl
           </div>
         </div>
         
-        {/* Work in Progress label - right side */}
-        <span style={{ 
-          fontSize: '0.6875rem', 
-          color: '#888', 
-          fontStyle: 'italic',
-          textTransform: 'uppercase',
-          letterSpacing: '0.05em'
-        }}>
-          Work in Progress
-        </span>
+        {/* Ratio indicator - right side */}
+        {videoOverlay.enabled && aspectRatio !== 'free' && (
+          <span style={{
+            fontSize: '0.6875rem',
+            color: '#888',
+            letterSpacing: '0.05em'
+          }}>
+            {aspectRatio} locked
+          </span>
+        )}
       </div>
       
       {!isCollapsed && (
@@ -4490,8 +4554,44 @@ const VideoOverlayContent = React.memo(function VideoOverlayContent({ videoOverl
                 ))}
               </select>
             </div>
+
+            {/* Corner Presets */}
+            <div style={{ display: 'flex', gap: '0.25rem', marginTop: '0.25rem' }}>
+              {[
+                { key: 'tl', label: 'TL', icon: '\u2196' },
+                { key: 'tr', label: 'TR', icon: '\u2197' },
+                { key: 'c',  label: 'CTR', icon: '\u2B1C' },
+                { key: 'bl', label: 'BL', icon: '\u2199' },
+                { key: 'br', label: 'BR', icon: '\u2198' },
+              ].map(({ key, label, icon }) => (
+                <button
+                  key={key}
+                  onClick={() => applyPreset(key)}
+                  style={{
+                    flex: 1,
+                    height: '1.75rem',
+                    padding: 0,
+                    borderRadius: 0,
+                    border: 'none',
+                    background: '#213338',
+                    color: '#7dd3e0',
+                    fontFamily: 'inherit',
+                    fontSize: '0.625rem',
+                    fontWeight: 600,
+                    cursor: 'pointer',
+                    transition: 'all 0.2s ease',
+                    display: 'flex',
+                    alignItems: 'center',
+                    justifyContent: 'center',
+                    gap: '0.15rem'
+                  }}
+                >
+                  <span style={{ fontSize: '0.5rem' }}>{icon}</span> {label}
+                </button>
+              ))}
+            </div>
           </div>
-          
+
           {/* Size Controls */}
           <div className="video-overlay-section">
             <div style={{ fontSize: '0.75rem', fontWeight: 600, color: 'var(--text-muted)', textTransform: 'uppercase', letterSpacing: '0.05em' }}>Size</div>
@@ -4504,15 +4604,15 @@ const VideoOverlayContent = React.memo(function VideoOverlayContent({ videoOverl
                 {[...Array(maxWidth)].map((_, i) => (
                   <button
                     key={i + 1}
-                    onClick={() => updateVideoOverlay({ width: i + 1 })}
+                    onClick={() => updateVideoOverlay({ width: i + 1 }, 'width')}
                     style={{
                       flex: 1,
                       height: '1.5rem',
                       padding: 0,
                       borderRadius: 0,
                       border: 'none',
-                      background: videoOverlay.width === i + 1 
-                        ? '#442544' 
+                      background: videoOverlay.width === i + 1
+                        ? '#442544'
                         : '#2a2a2a',
                       color: videoOverlay.width === i + 1 ? '#fe68ff' : '#888888',
                       fontFamily: 'inherit',
@@ -4528,7 +4628,7 @@ const VideoOverlayContent = React.memo(function VideoOverlayContent({ videoOverl
                 ))}
               </div>
             </div>
-            
+
             {/* Height */}
             <div className="video-control-row">
               <span className="control-icon" style={{ background: '#213338', color: '#7dd3e0', width: '1.5rem', height: '1.5rem', fontSize: '0.75rem' }}>↕</span>
@@ -4537,15 +4637,15 @@ const VideoOverlayContent = React.memo(function VideoOverlayContent({ videoOverl
                 {[...Array(maxHeight)].map((_, i) => (
                   <button
                     key={i + 1}
-                    onClick={() => updateVideoOverlay({ height: i + 1 })}
+                    onClick={() => updateVideoOverlay({ height: i + 1 }, 'height')}
                     style={{
                       flex: 1,
                       height: '1.5rem',
                       padding: 0,
                       borderRadius: 0,
                       border: 'none',
-                      background: videoOverlay.height === i + 1 
-                        ? '#442544' 
+                      background: videoOverlay.height === i + 1
+                        ? '#442544'
                         : '#2a2a2a',
                       color: videoOverlay.height === i + 1 ? '#fe68ff' : '#888888',
                       fontFamily: 'inherit',
@@ -4557,6 +4657,37 @@ const VideoOverlayContent = React.memo(function VideoOverlayContent({ videoOverl
                     }}
                   >
                     {i + 1}
+                  </button>
+                ))}
+              </div>
+            </div>
+
+            {/* Aspect Ratio Lock */}
+            <div className="video-control-row">
+              <span className="control-icon" style={{ background: '#213338', color: '#7dd3e0', width: '1.5rem', height: '1.5rem', fontSize: '0.75rem' }}>⊟</span>
+              <span style={{ fontSize: '0.8125rem', color: 'var(--text-secondary)', minWidth: '3rem' }}>Ratio</span>
+              <div style={{ display: 'flex', gap: '0.25rem', flex: 1 }}>
+                {['free', '16:9', '4:3'].map((r) => (
+                  <button
+                    key={r}
+                    onClick={() => updateVideoOverlay({ aspectRatio: r }, r !== 'free' ? 'ratio' : undefined)}
+                    style={{
+                      flex: 1,
+                      height: '1.5rem',
+                      padding: 0,
+                      borderRadius: 0,
+                      border: 'none',
+                      background: aspectRatio === r ? '#442544' : '#2a2a2a',
+                      color: aspectRatio === r ? '#fe68ff' : '#888888',
+                      fontFamily: 'inherit',
+                      fontSize: '0.6875rem',
+                      fontWeight: 600,
+                      cursor: 'pointer',
+                      transition: 'all 0.2s ease',
+                      textTransform: 'uppercase'
+                    }}
+                  >
+                    {r === 'free' ? 'Free' : r}
                   </button>
                 ))}
               </div>
@@ -4580,7 +4711,7 @@ const VideoOverlayContent = React.memo(function VideoOverlayContent({ videoOverl
         }}>
           <span>ℹ️</span>
           <span>
-            Video box: {videoOverlay.width}×{videoOverlay.height} at Row {videoOverlay.startRow}, Column {videoOverlay.startCol} • Occupies {slotsOccupied} slot{slotsOccupied !== 1 ? 's' : ''}
+            Video box: {videoOverlay.width}×{videoOverlay.height} at Row {videoOverlay.startRow}, Col {videoOverlay.startCol} • {slotsOccupied} slot{slotsOccupied !== 1 ? 's' : ''}{actualRatio > 0 ? ` • Ratio: ${actualRatio.toFixed(2)}:1` : ''}{aspectRatio !== 'free' ? ` (${aspectRatio})` : ''}
           </span>
         </div>
       )}

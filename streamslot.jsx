@@ -2827,7 +2827,7 @@ select option {
                   borderRadius: '0.25rem',
                   marginLeft: '0.5rem'
                 }}>
-                  v0.9 Beta
+                  v1.0
                 </span>
               </div>
               
@@ -3009,7 +3009,7 @@ select option {
                     background: '#2a2a2a',
                     borderRadius: '0.25rem'
                   }}>
-                    v0.9 Beta
+                    v1.0
                   </span>
                 </div>
               </div>
@@ -5242,15 +5242,6 @@ const BuyerEntryContent = React.memo(function BuyerEntryContent({ teams, teamOrd
       <div className="card" style={{ marginBottom: '1.25rem' }}>
         <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', marginBottom: '0.75rem' }}>
           <div className="section-title" style={{ marginBottom: 0 }}>Stream Overlays</div>
-          <span style={{ 
-            fontSize: '0.6875rem', 
-            color: '#888', 
-            fontStyle: 'italic',
-            textTransform: 'uppercase',
-            letterSpacing: '0.05em'
-          }}>
-            Work in Progress
-          </span>
         </div>
         <div className="stream-overlay-buttons" style={{ display: 'grid', gridTemplateColumns: 'repeat(5, minmax(0, 1fr))', gap: '0.75rem', alignItems: 'center' }}>
           {/* Live @ $1 Button */}

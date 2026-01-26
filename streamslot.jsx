@@ -4,6 +4,67 @@
 // Make React hooks globally available
 const { useState, useRef, useEffect, useMemo, useCallback } = React;
 
+// Error Boundary — catches component crashes and shows recovery UI
+class ErrorBoundary extends React.Component {
+  constructor(props) {
+    super(props);
+    this.state = { hasError: false, error: null };
+  }
+
+  static getDerivedStateFromError(error) {
+    return { hasError: true, error };
+  }
+
+  componentDidCatch(error, errorInfo) {
+    console.warn('StreamSlot Error Boundary caught:', error, errorInfo);
+  }
+
+  render() {
+    if (this.state.hasError) {
+      return React.createElement('div', {
+        style: {
+          display: 'flex',
+          flexDirection: 'column',
+          alignItems: 'center',
+          justifyContent: 'center',
+          minHeight: '100vh',
+          background: '#000',
+          color: '#fff',
+          fontFamily: '"Space Mono", monospace',
+          padding: '2rem',
+          textAlign: 'center'
+        }
+      },
+        React.createElement('div', { style: { fontSize: '3rem', marginBottom: '1rem' } }, '⚠️'),
+        React.createElement('h1', {
+          style: { fontSize: '1.5rem', fontWeight: 700, color: '#ff4e00', marginBottom: '1rem' }
+        }, 'Something went wrong'),
+        React.createElement('p', {
+          style: { fontSize: '0.875rem', color: '#ccc', marginBottom: '1.5rem', maxWidth: '400px', lineHeight: 1.6 }
+        }, 'StreamSlot encountered an unexpected error. Your saved data is safe — click below to reload.'),
+        React.createElement('button', {
+          onClick: () => window.location.reload(),
+          style: {
+            background: '#442544',
+            color: '#fe68ff',
+            border: 'none',
+            padding: '0.875rem 2rem',
+            borderRadius: 0,
+            fontWeight: 700,
+            fontSize: '0.875rem',
+            cursor: 'pointer',
+            fontFamily: 'inherit',
+            textTransform: 'uppercase'
+          }
+        }, 'Reload StreamSlot')
+      );
+    }
+    return this.props.children;
+  }
+}
+
+window.ErrorBoundary = ErrorBoundary;
+
 // Load saved state from localStorage
 const loadSavedState = () => {
   try {
@@ -233,8 +294,7 @@ const SPORT_ICONS = { nba: '🏀', mlb: '⚾', nfl: '🏈', custom: '🔥' };
 const RANDOMIZER_COLUMNS = 5;
 
 function Dashboard() {
-  // SPONSOR TOGGLE - Set to true to reveal sponsor sections
-  const SHOW_SPONSOR = false; // Change to true when you have a sponsor
+
   
   const [activeTab, setActiveTab] = useState(0);
   const theme = 'dark'; // Locked to dark theme
@@ -979,23 +1039,6 @@ select option {
           flex: 1;
         }
         
-        .sponsor-badge {
-          display: flex;
-          align-items: center;
-          gap: 0.5rem;
-          padding: 0.375rem 0.75rem;
-          background: var(--bg-panel);
-          border-radius: 0;
-          border: 1px solid var(--border-color-inner);
-          font-size: 0.6875rem;
-          color: var(--text-muted);
-        }
-        
-        .sponsor-badge-name {
-          font-weight: 600;
-          color: var(--text-secondary);
-        }
-        
         .tab-buttons {
           display: flex;
           gap: 0.25rem;
@@ -1484,15 +1527,6 @@ select option {
           font-weight: 600;
         }
         
-        /* Sponsor container responsive styles */
-        .sponsor-footer {
-          transition: all 0.2s ease;
-        }
-        
-        .sponsor-modal {
-          transition: all 0.2s ease;
-        }
-        
         .mobile-scene-toggle {
           display: none;
         }
@@ -1533,11 +1567,6 @@ select option {
           .nav-actions {
             flex: none;
             gap: 0.5rem !important;
-          }
-
-          .sponsor-badge {
-            font-size: 0.5625rem;
-            padding: 0.25rem 0.5rem;
           }
 
           .tab-buttons {
@@ -1646,18 +1675,6 @@ select option {
           .section-title {
             font-size: 1rem;
             margin-bottom: 1rem;
-          }
-
-          .sponsor-footer {
-            width: 100% !important;
-            max-width: 320px !important;
-            height: 50px !important;
-          }
-
-          .sponsor-modal {
-            width: 100% !important;
-            max-width: 320px !important;
-            height: 50px !important;
           }
 
           .buyer-entry-form {
@@ -2881,8 +2898,8 @@ select option {
 
       <div className={`main-container ${!mobileSceneHidden ? 'scene-visible' : ''}`} style={{ marginTop: `${sceneHeight}rem`, height: `calc(100vh - ${sceneHeight}rem)` }}>
         {/* Content Area with Tabs */}
-        <main className="content-area">
-          <nav className="tab-navigation">
+        <main className="content-area" role="main">
+          <nav className="tab-navigation" aria-label="Main navigation">
             <div className="nav-left">
               <div className="logo">
                 <svg xmlns="http://www.w3.org/2000/svg" viewBox="480 180 400 400" style={{ width: '2.5rem', height: '2.5rem' }}>
@@ -2909,36 +2926,19 @@ select option {
                 </span>
               </div>
               
-              {SHOW_SPONSOR && (
-                <div className="sponsor-badge">
-                  <span>Sponsored by</span>
-                  <a 
-                    href="https://sponsor-website.com" 
-                    target="_blank" 
-                    rel="noopener noreferrer"
-                    className="sponsor-badge-name"
-                    style={{
-                      textDecoration: 'none',
-                      transition: 'opacity 0.2s ease'
-                    }}
-                    onMouseEnter={(e) => e.target.style.opacity = '0.7'}
-                    onMouseLeave={(e) => e.target.style.opacity = '1'}
-                  >
-                    {/* Sponsor name/logo goes here */}
-                    Sponsor Name
-                  </a>
-                </div>
-              )}
             </div>
             
-            <div className="tab-buttons">
+            <div className="tab-buttons" role="tablist" aria-label="Dashboard sections">
               {tabs.map((tab) => (
                 <button
                   key={tab.id}
+                  role="tab"
+                  aria-selected={activeTab === tab.id}
+                  aria-controls={`tabpanel-${tab.id}`}
                   className={`tab-button ${activeTab === tab.id ? 'active' : ''}`}
                   onClick={() => setActiveTab(tab.id)}
                 >
-                  <span>{tab.icon}</span>
+                  <span aria-hidden="true">{tab.icon}</span>
                   <span>{tab.label}</span>
                 </button>
               ))}
@@ -2946,6 +2946,7 @@ select option {
             
             <div className="nav-actions" style={{ display: 'flex', alignItems: 'center', gap: '0.75rem' }}>
               <button
+                aria-label="Reset Board"
                 onClick={() => setShowResetConfirm(true)}
                 style={{
                   height: '2.5rem',
@@ -2972,8 +2973,9 @@ select option {
           </nav>
 
           {/* Mobile Scene Toggle Button */}
-          <button 
+          <button
             className="mobile-scene-toggle"
+            aria-label={mobileSceneHidden ? 'Show Scene Preview' : 'Hide Scene Preview'}
             onClick={() => setMobileSceneHidden(!mobileSceneHidden)}
             style={{
               width: '100%',
@@ -2997,34 +2999,9 @@ select option {
             <span>{mobileSceneHidden ? '👁️ Show Scene Preview' : '👁️‍🗨️ Hide Scene Preview'}</span>
           </button>
 
-          <div className="tab-content" key={activeTab}>
+          <div className="tab-content" key={activeTab} role="tabpanel" id={`tabpanel-${activeTab}`} aria-label={`${tabs.find(t => t.id === activeTab)?.label || ''} panel`}>
             {renderActiveTab()}
           </div>
-          
-          {/* Ad Space */}
-          {/* <div style={{
-            marginTop: '2rem',
-            display: 'flex',
-            alignItems: 'center',
-            justifyContent: 'center'
-          }}>
-            <div 
-              className="sponsor-footer"
-              style={{
-                width: '728px',
-                height: '90px',
-                maxWidth: '100%',
-                background: '#2a2a2a',
-                borderRadius: 0,
-                border: '1px solid var(--border-color-inner)',
-                display: 'flex',
-                alignItems: 'center',
-                justifyContent: 'center',
-                overflow: 'hidden'
-              }}
-            > 
-            </div>
-          </div> */}
           
           {/* AdSense Ad Unit */}
           <div>
@@ -3235,41 +3212,11 @@ select option {
             
 
             
-            {/* Sponsored by - Controlled by SHOW_SPONSOR toggle */}
-            {SHOW_SPONSOR && (
-              <div style={{
-                display: 'flex',
-                justifyContent: 'center',
-                alignItems: 'center',
-                gap: '0.5rem',
-                fontSize: '0.75rem',
-                color: 'var(--text-muted)',
-                marginTop: '0.5rem'
-              }}>
-                <span>Sponsored by</span>
-                <a 
-                  href="https://sponsor-website.com" 
-                  target="_blank" 
-                  rel="noopener noreferrer"
-                  style={{ 
-                    color: 'var(--text-primary)',
-                    fontWeight: 600,
-                    textDecoration: 'none',
-                    transition: 'opacity 0.2s ease'
-                  }}
-                  onMouseEnter={(e) => e.target.style.opacity = '0.7'}
-                  onMouseLeave={(e) => e.target.style.opacity = '1'}
-                >
-                  {/* Sponsor name/logo goes here */}
-                  Sponsor Name
-                </a>
-              </div>
-            )}
           </footer>
           
           {/* Reset Confirmation Modal */}
           {showResetConfirm && (
-            <div style={{
+            <div role="dialog" aria-modal="true" aria-label="Reset Board Confirmation" onClick={(e) => e.target === e.currentTarget && setShowResetConfirm(false)} style={{
               position: 'absolute',
               top: 0,
               left: 0,
@@ -3389,38 +3336,13 @@ select option {
                   </button>
                 </div>
                 
-                {/* Reset Modal Sponsor Space */}
-                <div style={{
-                  marginTop: '1.5rem',
-                  display: 'flex',
-                  alignItems: 'center',
-                  justifyContent: 'center'
-                }}>
-                  <div 
-                    className="sponsor-modal"
-                    style={{
-                      width: '468px',
-                      height: '60px',
-                      maxWidth: '100%',
-                      background: 'var(--bg-panel)',
-                      borderRadius: 0,
-                      border: '1px solid var(--border-color-inner)',
-                      display: 'flex',
-                      alignItems: 'center',
-                      justifyContent: 'center',
-                      overflow: 'hidden'
-                    }}
-                  >
-                    {/* AdSense code goes here */}
-                  </div>
-                </div>
               </div>
             </div>
           )}
           
           {/* Category Change Confirmation Dialog */}
           {showCategoryConfirm && (
-            <div style={{
+            <div role="dialog" aria-modal="true" aria-label="Category Change Confirmation" onClick={(e) => { if (e.target === e.currentTarget) { setShowCategoryConfirm(false); setPendingCategory(null); } }} style={{
               position: 'absolute',
               top: 0,
               left: 0,
@@ -4520,8 +4442,9 @@ const VideoOverlayContent = React.memo(function VideoOverlayContent({ videoOverl
           <div className="section-title" style={{ marginBottom: 0 }}>Overlay</div>
           
           {/* Enable/Disable Toggle - next to title */}
-          <div style={{ display: 'flex', gap: '0.25rem' }}>
-            <button 
+          <div role="group" aria-label="Video overlay toggle" style={{ display: 'flex', gap: '0.25rem' }}>
+            <button
+              aria-label="Disable video overlay"
               onClick={() => handleEnableToggle(false)}
               style={{
                 height: '1.5rem',
@@ -4539,7 +4462,8 @@ const VideoOverlayContent = React.memo(function VideoOverlayContent({ videoOverl
             >
               OFF
             </button>
-            <button 
+            <button
+              aria-label="Enable video overlay"
               onClick={() => handleEnableToggle(true)}
               style={{
                 height: '1.5rem',
@@ -5035,7 +4959,21 @@ const BuyerEntryContent = React.memo(function BuyerEntryContent({ teams, teamOrd
   const [showSuggestions, setShowSuggestions] = useState(false);
   const [showOverlayConfirm, setShowOverlayConfirm] = useState(null); // null or 'live', 'pyt', 'stashpass', '2spins'
   const [showRandomizeConfirm, setShowRandomizeConfirm] = useState(false);
-  
+
+  // Escape key to close modals within this component
+  useEffect(() => {
+    const handleEsc = (e) => {
+      if (e.key === 'Escape') {
+        if (showOverlayConfirm) { setShowOverlayConfirm(null); e.stopPropagation(); }
+        if (showRandomizeConfirm) { setShowRandomizeConfirm(false); e.stopPropagation(); }
+      }
+    };
+    if (showOverlayConfirm || showRandomizeConfirm) {
+      document.addEventListener('keydown', handleEsc);
+      return () => document.removeEventListener('keydown', handleEsc);
+    }
+  }, [showOverlayConfirm, showRandomizeConfirm]);
+
   const availableTeams = teamOrder.filter(idx => purchasedTeams[idx] === undefined);
   const purchasedCount = Object.keys(purchasedTeams).length;
   
@@ -5653,7 +5591,7 @@ const BuyerEntryContent = React.memo(function BuyerEntryContent({ teams, teamOrd
         const warning = warnings[showOverlayConfirm];
         
         return (
-          <div style={{
+          <div role="dialog" aria-modal="true" aria-label="Overlay Confirmation" onClick={(e) => e.target === e.currentTarget && setShowOverlayConfirm(null)} style={{
             position: 'absolute',
             top: 0,
             left: 0,
@@ -5751,7 +5689,7 @@ const BuyerEntryContent = React.memo(function BuyerEntryContent({ teams, teamOrd
       
       {/* Randomize Confirmation Dialog */}
       {showRandomizeConfirm && (
-        <div style={{
+        <div role="dialog" aria-modal="true" aria-label="Randomizer Confirmation" onClick={(e) => e.target === e.currentTarget && setShowRandomizeConfirm(false)} style={{
           position: 'absolute',
           top: 0,
           left: 0,
@@ -5862,7 +5800,18 @@ const TradeMachineContent = React.memo(function TradeMachineContent({ teams, pur
   const [rightTeams, setRightTeams] = useState([]);
   const [tradeType, setTradeType] = useState('trade'); // 'trade' or 'respin'
   const [showConfirm, setShowConfirm] = useState(false);
-  
+
+  // Escape key to close confirm dialog
+  useEffect(() => {
+    const handleEsc = (e) => {
+      if (e.key === 'Escape' && showConfirm) { setShowConfirm(false); e.stopPropagation(); }
+    };
+    if (showConfirm) {
+      document.addEventListener('keydown', handleEsc);
+      return () => document.removeEventListener('keydown', handleEsc);
+    }
+  }, [showConfirm]);
+
   // Get unique buyers
   const buyers = [...new Set(Object.values(purchasedTeams))];
   
@@ -6271,7 +6220,7 @@ const TradeMachineContent = React.memo(function TradeMachineContent({ teams, pur
       
       {/* Confirmation Dialog */}
       {showConfirm && (
-        <div style={{
+        <div role="dialog" aria-modal="true" aria-label="Trade Confirmation" onClick={(e) => e.target === e.currentTarget && setShowConfirm(false)} style={{
           position: 'absolute',
           top: 0,
           left: 0,
@@ -6928,7 +6877,7 @@ const HelpContent = React.memo(function HelpContent() {
         <div style={{ display: 'flex', alignItems: 'center', gap: '0.75rem' }}>
           <span style={{ fontSize: '1.25rem' }}>💡</span>
           <p style={{ color: 'var(--text-secondary)', fontSize: '0.875rem', margin: 0, lineHeight: 1.6 }}>
-            Have ideas, suggestions, or found a bug? We'd love to hear from you! Reach out at <a href="mailto:streamslotapp@gmail.com" style={{ color: 'var(--accent)' }}><strong>streamslotapp@gmail.com.com</strong></a>
+            Have ideas, suggestions, or found a bug? We'd love to hear from you! Reach out at <a href="mailto:streamslotapp@gmail.com" style={{ color: 'var(--accent)' }}><strong>streamslotapp@gmail.com</strong></a>
           </p>
         </div>
       </div>

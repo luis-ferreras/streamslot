@@ -5,6 +5,19 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
   <title>StreamSlot - Built for Card Streamers to Manage Card Breaks</title>
   <meta name="description" content="Free OBS-ready dashboard for trading card box breaks. NBA, MLB, NFL team boards with randomizer and trade machine.">
+  <link rel="canonical" href="https://streamslot.app/">
+  <!-- Open Graph -->
+  <meta property="og:type" content="website">
+  <meta property="og:url" content="https://streamslot.app/">
+  <meta property="og:title" content="StreamSlot - Built for Card Streamers to Manage Card Breaks">
+  <meta property="og:description" content="Free OBS-ready dashboard for trading card box breaks. NBA, MLB, NFL team boards with randomizer and trade machine.">
+  <meta property="og:image" content="https://luis-ferreras.github.io/streamslot/images/og-image.png">
+  <meta property="og:site_name" content="StreamSlot">
+  <!-- Twitter Card -->
+  <meta name="twitter:card" content="summary_large_image">
+  <meta name="twitter:title" content="StreamSlot - Built for Card Streamers to Manage Card Breaks">
+  <meta name="twitter:description" content="Free OBS-ready dashboard for trading card box breaks. NBA, MLB, NFL team boards with randomizer and trade machine.">
+  <meta name="twitter:image" content="https://luis-ferreras.github.io/streamslot/images/og-image.png">
   <link rel="apple-touch-icon" sizes="180x180" href="https://luis-ferreras.github.io/streamslot/images/apple-touch-icon.png">
   <link rel="icon" type="image/png" sizes="32x32" href="https://luis-ferreras.github.io/streamslot/images/favicon-32x32.png">
   <link rel="icon" type="image/png" sizes="16x16" href="https://luis-ferreras.github.io/streamslot/images/favicon-16x16.png">
@@ -72,7 +85,8 @@
           const DashboardFunc = window.Dashboard || Dashboard;
           if (DashboardFunc) {
             const root = ReactDOM.createRoot(document.getElementById('root'));
-            root.render(React.createElement(DashboardFunc));
+            const ErrorBoundaryClass = window.ErrorBoundary || ErrorBoundary;
+            root.render(React.createElement(ErrorBoundaryClass, null, React.createElement(DashboardFunc)));
           } else {
             document.getElementById('root').innerHTML = '<div class="loading" style="color: #ff4e00;">Dashboard not found</div>';
           }

@@ -165,6 +165,14 @@ const tabs = [
 
 // Reusable SVG logo component
 const StreamSlotLogo = () => (
+  <svg width="20" height="20" viewBox="0 0 20 20" fill="none">
+    <rect width="20" height="20" rx="4" fill="#442544"/>
+    <rect x="3" y="3" width="6" height="6" rx="1" fill="#fe68ff"/>
+    <rect x="11" y="3" width="6" height="6" rx="1" fill="#fe68ff" opacity="0.6"/>
+    <rect x="3" y="11" width="6" height="6" rx="1" fill="#fe68ff" opacity="0.6"/>
+    <rect x="11" y="11" width="6" height="6" rx="1" fill="#fe68ff" opacity="0.3"/>
+  </svg>
+);
 
 // Pre-generated confetti particle properties (avoids Math.random() in render)
 const CLAIM_CONFETTI = Array.from({ length: 20 }, (_, i) => ({

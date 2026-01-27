@@ -347,64 +347,6 @@ function Dashboard() {
   const sceneRef = useRef(null);
   const [mobileSceneHidden, setMobileSceneHidden] = useState(true); // Hidden by default on mobile
 
-  // Undo/Redo history system
-  const MAX_HISTORY = 50;
-  const historyStack = useRef([]); // Array of snapshots
-  const historyIndex = useRef(-1); // Current position in stack
-  const [canUndo, setCanUndo] = useState(false);
-  const [canRedo, setCanRedo] = useState(false);
-  const isUndoRedoing = useRef(false); // Flag to prevent pushing during undo/redo
-
-  const pushSnapshot = useCallback(() => {
-    if (isUndoRedoing.current) return;
-    const snapshot = {
-      purchasedTeams: { ...purchasedTeams },
-      teamOrder: [...teamOrder],
-      transactionLog: [...transactionLog],
-      boxNumber
-    };
-    // Trim any redo states ahead of current position
-    historyStack.current = historyStack.current.slice(0, historyIndex.current + 1);
-    historyStack.current.push(snapshot);
-    // Cap history size
-    if (historyStack.current.length > MAX_HISTORY) {
-      historyStack.current.shift();
-    } else {
-      historyIndex.current++;
-    }
-    setCanUndo(historyIndex.current > 0);
-    setCanRedo(false);
-  }, [purchasedTeams, teamOrder, transactionLog, boxNumber]);
-
-  const undo = useCallback(() => {
-    if (historyIndex.current <= 0) return;
-    isUndoRedoing.current = true;
-    historyIndex.current--;
-    const snapshot = historyStack.current[historyIndex.current];
-    setPurchasedTeams(snapshot.purchasedTeams);
-    setTeamOrder(snapshot.teamOrder);
-    setTransactionLog(snapshot.transactionLog);
-    setBoxNumber(snapshot.boxNumber);
-    setCanUndo(historyIndex.current > 0);
-    setCanRedo(true);
-    // Clear flag after React processes the state updates
-    setTimeout(() => { isUndoRedoing.current = false; }, 0);
-  }, []);
-
-  const redo = useCallback(() => {
-    if (historyIndex.current >= historyStack.current.length - 1) return;
-    isUndoRedoing.current = true;
-    historyIndex.current++;
-    const snapshot = historyStack.current[historyIndex.current];
-    setPurchasedTeams(snapshot.purchasedTeams);
-    setTeamOrder(snapshot.teamOrder);
-    setTransactionLog(snapshot.transactionLog);
-    setBoxNumber(snapshot.boxNumber);
-    setCanUndo(true);
-    setCanRedo(historyIndex.current < historyStack.current.length - 1);
-    setTimeout(() => { isUndoRedoing.current = false; }, 0);
-  }, []);
-
   // AdSense initialization - script is loaded via index.html
   useEffect(() => {
     try {
@@ -413,18 +355,6 @@ function Dashboard() {
       console.log('AdSense initialization:', err);
     }
   }, []);
-
-  // Seed initial undo history snapshot on mount
-  useEffect(() => {
-    const snapshot = {
-      purchasedTeams: { ...purchasedTeams },
-      teamOrder: [...teamOrder],
-      transactionLog: [...transactionLog],
-      boxNumber
-    };
-    historyStack.current = [snapshot];
-    historyIndex.current = 0;
-  }, []); // eslint-disable-line react-hooks/exhaustive-deps
 
   // Shared drag resize logic
   const useDragResize = (isDraggingState, setIsDraggingState, startYRef, startHeightRef, setHeight, min, max, roundFn) => {
@@ -503,7 +433,76 @@ function Dashboard() {
     }
     return currentTeams.map((_, i) => i);
   });
-  
+
+  // Undo/Redo history system
+  const MAX_HISTORY = 50;
+  const historyStack = useRef([]); // Array of snapshots
+  const historyIndex = useRef(-1); // Current position in stack
+  const [canUndo, setCanUndo] = useState(false);
+  const [canRedo, setCanRedo] = useState(false);
+  const isUndoRedoing = useRef(false); // Flag to prevent pushing during undo/redo
+
+  const pushSnapshot = useCallback(() => {
+    if (isUndoRedoing.current) return;
+    const snapshot = {
+      purchasedTeams: { ...purchasedTeams },
+      teamOrder: [...teamOrder],
+      transactionLog: [...transactionLog],
+      boxNumber
+    };
+    // Trim any redo states ahead of current position
+    historyStack.current = historyStack.current.slice(0, historyIndex.current + 1);
+    historyStack.current.push(snapshot);
+    // Cap history size
+    if (historyStack.current.length > MAX_HISTORY) {
+      historyStack.current.shift();
+    } else {
+      historyIndex.current++;
+    }
+    setCanUndo(historyIndex.current > 0);
+    setCanRedo(false);
+  }, [purchasedTeams, teamOrder, transactionLog, boxNumber]);
+
+  const undo = useCallback(() => {
+    if (historyIndex.current <= 0) return;
+    isUndoRedoing.current = true;
+    historyIndex.current--;
+    const snapshot = historyStack.current[historyIndex.current];
+    setPurchasedTeams(snapshot.purchasedTeams);
+    setTeamOrder(snapshot.teamOrder);
+    setTransactionLog(snapshot.transactionLog);
+    setBoxNumber(snapshot.boxNumber);
+    setCanUndo(historyIndex.current > 0);
+    setCanRedo(true);
+    setTimeout(() => { isUndoRedoing.current = false; }, 0);
+  }, []);
+
+  const redo = useCallback(() => {
+    if (historyIndex.current >= historyStack.current.length - 1) return;
+    isUndoRedoing.current = true;
+    historyIndex.current++;
+    const snapshot = historyStack.current[historyIndex.current];
+    setPurchasedTeams(snapshot.purchasedTeams);
+    setTeamOrder(snapshot.teamOrder);
+    setTransactionLog(snapshot.transactionLog);
+    setBoxNumber(snapshot.boxNumber);
+    setCanUndo(true);
+    setCanRedo(historyIndex.current < historyStack.current.length - 1);
+    setTimeout(() => { isUndoRedoing.current = false; }, 0);
+  }, []);
+
+  // Seed initial undo history snapshot on mount
+  useEffect(() => {
+    const snapshot = {
+      purchasedTeams: { ...purchasedTeams },
+      teamOrder: [...teamOrder],
+      transactionLog: [...transactionLog],
+      boxNumber
+    };
+    historyStack.current = [snapshot];
+    historyIndex.current = 0;
+  }, []); // eslint-disable-line react-hooks/exhaustive-deps
+
   // Save state to localStorage whenever it changes (debounced)
   useEffect(() => {
     const timer = setTimeout(() => {

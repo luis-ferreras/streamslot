@@ -22,7 +22,36 @@
   <link rel="icon" type="image/png" sizes="32x32" href="https://luis-ferreras.github.io/streamslot/images/favicon-32x32.png">
   <link rel="icon" type="image/png" sizes="16x16" href="https://luis-ferreras.github.io/streamslot/images/favicon-16x16.png">
   <link rel="manifest" href="./images/site.webmanifest">
+  <!-- Google tag (gtag.js) -->
+  <script async src="https://www.googletagmanager.com/gtag/js?id=G-LPV8QWMPDT"></script>
+  <script>
+    window.dataLayer = window.dataLayer || [];
+    function gtag(){dataLayer.push(arguments);}
+    gtag('js', new Date());
+    gtag('config', 'G-LPV8QWMPDT');
+  </script>
   <script async src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-1453329637761114" crossorigin="anonymous"></script>
+  <!-- Structured Data -->
+  <script type="application/ld+json">
+  {
+    "@context": "https://schema.org",
+    "@type": "WebApplication",
+    "name": "StreamSlot",
+    "url": "https://streamslot.app/",
+    "description": "Free OBS-ready dashboard for trading card box breaks. NBA, MLB, NFL team boards with randomizer and trade machine.",
+    "applicationCategory": "UtilityApplication",
+    "operatingSystem": "Any",
+    "offers": {
+      "@type": "Offer",
+      "price": "0",
+      "priceCurrency": "USD"
+    },
+    "author": {
+      "@type": "Person",
+      "name": "Luis Ferreras"
+    }
+  }
+  </script>
   <style>
     * { margin: 0; padding: 0; box-sizing: border-box; }
     body { font-family: "Space Mono", monospace; background: #000000; color: #ffffff; }
@@ -31,16 +60,6 @@
   </style>
 </head>
 
-<!-- Google tag (gtag.js) -->
-<script async src="https://www.googletagmanager.com/gtag/js?id=G-LPV8QWMPDT"></script>
-<script>
-  window.dataLayer = window.dataLayer || [];
-  function gtag(){dataLayer.push(arguments);}
-  gtag('js', new Date());
-
-  gtag('config', 'G-LPV8QWMPDT');
-</script>
-  
 <body>
 
   <div id="mobile-modal" onclick="if(event.target===this)this.style.display='none'" style="display: none; position: fixed; top: 0; left: 0; right: 0; bottom: 0; background: rgba(0, 0, 0, 0.95); z-index: 99999; align-items: center; justify-content: center; padding: 1.5rem; padding-top: calc(1.5rem + env(safe-area-inset-top, 0px)); padding-bottom: calc(1.5rem + env(safe-area-inset-bottom, 0px));">

@@ -6332,6 +6332,96 @@ const TradeMachineContent = React.memo(function TradeMachineContent({ teams, pur
 });
 
 const ExportContent = React.memo(function ExportContent({ boxName, boxNumber, purchasedTeams, teams, exportToCSV, generateCSVData, transactionLog, logExpanded, setLogExpanded, setTransactionLog }) {
+  const [backupCollapsed, setBackupCollapsed] = useState(true);
+  const [importStatus, setImportStatus] = useState(null);
+  const [importData, setImportData] = useState(null);
+  const [importError, setImportError] = useState('');
+  const fileInputRef = useRef(null);
+
+  const handleExport = useCallback(() => {
+    try {
+      const raw = localStorage.getItem('streamslot-state');
+      if (!raw) {
+        alert('No saved data found to export.');
+        return;
+      }
+      const data = JSON.parse(raw);
+      const exportObj = {
+        version: '1.0',
+        app: 'StreamSlot',
+        exportedAt: new Date().toISOString(),
+        data
+      };
+      const blob = new Blob([JSON.stringify(exportObj, null, 2)], { type: 'application/json' });
+      const url = URL.createObjectURL(blob);
+      const a = document.createElement('a');
+      const date = new Date().toISOString().split('T')[0];
+      a.href = url;
+      a.download = `streamslot-backup-${date}.json`;
+      document.body.appendChild(a);
+      a.click();
+      document.body.removeChild(a);
+      URL.revokeObjectURL(url);
+    } catch (e) {
+      console.warn('Export failed:', e);
+      alert('Failed to export data. See console for details.');
+    }
+  }, []);
+
+  const handleFileSelect = useCallback((e) => {
+    const file = e.target.files[0];
+    if (!file) return;
+    const reader = new FileReader();
+    reader.onload = (ev) => {
+      try {
+        const parsed = JSON.parse(ev.target.result);
+        let stateData;
+        if (parsed.app === 'StreamSlot' && parsed.data) {
+          stateData = parsed.data;
+        } else if (parsed.version && parsed.data) {
+          stateData = parsed.data;
+        } else if (parsed.category || parsed.columns || parsed.purchasedTeams) {
+          stateData = parsed;
+        } else {
+          setImportError("Invalid file format. This doesn't appear to be a StreamSlot backup.");
+          setImportStatus('error');
+          return;
+        }
+        const knownKeys = ['columns', 'category', 'spacing', 'purchasedTeams', 'teamOrder'];
+        if (!knownKeys.some(key => key in stateData)) {
+          setImportError('Invalid backup data. No recognized StreamSlot settings found.');
+          setImportStatus('error');
+          return;
+        }
+        setImportData(stateData);
+        setImportStatus('confirm');
+      } catch (err) {
+        setImportError("Failed to parse file. Make sure it's a valid JSON backup.");
+        setImportStatus('error');
+      }
+    };
+    reader.readAsText(file);
+    e.target.value = '';
+  }, []);
+
+  const confirmImport = useCallback(() => {
+    try {
+      localStorage.setItem('streamslot-state', JSON.stringify(importData));
+      setImportStatus('success');
+      setTimeout(() => window.location.reload(), 1500);
+    } catch (e) {
+      setImportError('Failed to restore data. See console for details.');
+      setImportStatus('error');
+      console.warn('Import failed:', e);
+    }
+  }, [importData]);
+
+  const cancelImport = useCallback(() => {
+    setImportData(null);
+    setImportStatus(null);
+    setImportError('');
+  }, []);
+
   // Group teams by buyer for preview
   const purchasesByBuyer = {};
   Object.entries(purchasedTeams).forEach(([teamIdx, buyer]) => {
@@ -6689,6 +6779,220 @@ const ExportContent = React.memo(function ExportContent({ boxName, boxNumber, pu
                   })
                 )}
               </div>
+            </div>
+          )}
+        </div>
+      </div>
+
+      {/* Data Backup - Collapsible */}
+      <div className="card" style={{ marginTop: '1rem' }}>
+        <div style={{
+          background: 'var(--bg-panel)',
+          borderRadius: 0,
+          border: '1px solid var(--border-color-inner)',
+          overflow: 'hidden'
+        }}>
+          <button
+            onClick={() => setBackupCollapsed(!backupCollapsed)}
+            style={{
+              width: '100%',
+              padding: '1rem',
+              background: 'none',
+              border: 'none',
+              cursor: 'pointer',
+              display: 'flex',
+              alignItems: 'center',
+              gap: '0.75rem',
+              textAlign: 'left'
+            }}
+          >
+            <span style={{
+              width: '2rem',
+              height: '2rem',
+              background: '#2a2a2a',
+              borderRadius: 0,
+              display: 'flex',
+              alignItems: 'center',
+              justifyContent: 'center',
+              fontSize: '1rem',
+              flexShrink: 0
+            }}>
+              💾
+            </span>
+            <div style={{ flex: 1 }}>
+              <div style={{ fontWeight: 600, fontSize: '0.9375rem', color: 'var(--text-primary)', marginBottom: '0.25rem' }}>
+                Data Backup
+              </div>
+              <div style={{ fontSize: '0.8125rem', color: 'var(--text-muted)' }}>
+                Export or import a full backup of all StreamSlot settings and data
+              </div>
+            </div>
+            <span style={{ color: '#fff', fontSize: '1rem', fontWeight: 700 }}>
+              {backupCollapsed ? '+' : '−'}
+            </span>
+          </button>
+
+          {!backupCollapsed && (
+            <div style={{
+              padding: '0 1rem 1rem 1rem',
+              borderTop: '1px solid var(--border-color-inner)'
+            }}>
+              <p style={{ color: 'var(--text-secondary)', fontSize: '0.8125rem', marginTop: '1rem', marginBottom: '1rem', lineHeight: 1.6 }}>
+                Download a JSON backup of your entire StreamSlot state, or restore from a previous backup. Useful for protecting against browser data loss or transferring between devices.
+              </p>
+
+              <div style={{ display: 'flex', gap: '0.75rem', flexWrap: 'wrap' }}>
+                <button
+                  onClick={handleExport}
+                  style={{
+                    display: 'flex',
+                    alignItems: 'center',
+                    gap: '0.5rem',
+                    padding: '0.75rem 1.25rem',
+                    background: '#1a3a1a',
+                    color: '#4ade80',
+                    border: '1px solid #2d5a2d',
+                    borderRadius: 0,
+                    fontWeight: 600,
+                    fontSize: '0.8125rem',
+                    cursor: 'pointer',
+                    fontFamily: 'inherit',
+                    transition: 'opacity 0.2s ease'
+                  }}
+                  onMouseEnter={(e) => e.currentTarget.style.opacity = '0.8'}
+                  onMouseLeave={(e) => e.currentTarget.style.opacity = '1'}
+                >
+                  <span>↓</span> Export Backup
+                </button>
+
+                <button
+                  onClick={() => fileInputRef.current?.click()}
+                  style={{
+                    display: 'flex',
+                    alignItems: 'center',
+                    gap: '0.5rem',
+                    padding: '0.75rem 1.25rem',
+                    background: '#1a2a3a',
+                    color: '#60a5fa',
+                    border: '1px solid #2d4a6a',
+                    borderRadius: 0,
+                    fontWeight: 600,
+                    fontSize: '0.8125rem',
+                    cursor: 'pointer',
+                    fontFamily: 'inherit',
+                    transition: 'opacity 0.2s ease'
+                  }}
+                  onMouseEnter={(e) => e.currentTarget.style.opacity = '0.8'}
+                  onMouseLeave={(e) => e.currentTarget.style.opacity = '1'}
+                >
+                  <span>↑</span> Import Backup
+                </button>
+                <input
+                  ref={fileInputRef}
+                  type="file"
+                  accept=".json"
+                  style={{ display: 'none' }}
+                  onChange={handleFileSelect}
+                />
+              </div>
+
+              {importStatus === 'confirm' && (
+                <div style={{
+                  marginTop: '1rem',
+                  padding: '1rem',
+                  background: '#2a2a1a',
+                  border: '1px solid #5a5a2d',
+                  display: 'flex',
+                  flexDirection: 'column',
+                  gap: '0.75rem'
+                }}>
+                  <div style={{ display: 'flex', alignItems: 'center', gap: '0.5rem' }}>
+                    <span style={{ fontSize: '1.25rem' }}>⚠️</span>
+                    <span style={{ fontWeight: 600, color: '#fbbf24', fontSize: '0.875rem' }}>Confirm Import</span>
+                  </div>
+                  <p style={{ color: 'var(--text-secondary)', fontSize: '0.8125rem', margin: 0, lineHeight: 1.6 }}>
+                    This will replace all your current settings and data with the imported backup. This action cannot be undone. The page will reload to apply changes.
+                  </p>
+                  <div style={{ display: 'flex', gap: '0.5rem' }}>
+                    <button
+                      onClick={confirmImport}
+                      style={{
+                        padding: '0.5rem 1rem',
+                        background: '#442544',
+                        color: '#fe68ff',
+                        border: 'none',
+                        borderRadius: 0,
+                        fontWeight: 600,
+                        fontSize: '0.8125rem',
+                        cursor: 'pointer',
+                        fontFamily: 'inherit'
+                      }}
+                    >
+                      Confirm & Reload
+                    </button>
+                    <button
+                      onClick={cancelImport}
+                      style={{
+                        padding: '0.5rem 1rem',
+                        background: '#3a3a3a',
+                        color: '#ccc',
+                        border: '1px solid #555',
+                        borderRadius: 0,
+                        fontWeight: 600,
+                        fontSize: '0.8125rem',
+                        cursor: 'pointer',
+                        fontFamily: 'inherit'
+                      }}
+                    >
+                      Cancel
+                    </button>
+                  </div>
+                </div>
+              )}
+
+              {importStatus === 'success' && (
+                <div style={{
+                  marginTop: '1rem',
+                  padding: '1rem',
+                  background: '#1a3a1a',
+                  border: '1px solid #2d5a2d'
+                }}>
+                  <span style={{ color: '#4ade80', fontSize: '0.875rem', fontWeight: 600 }}>
+                    Data restored successfully! Reloading...
+                  </span>
+                </div>
+              )}
+
+              {importStatus === 'error' && (
+                <div style={{
+                  marginTop: '1rem',
+                  padding: '1rem',
+                  background: '#3a1a1a',
+                  border: '1px solid #5a2d2d',
+                  display: 'flex',
+                  justifyContent: 'space-between',
+                  alignItems: 'center'
+                }}>
+                  <span style={{ color: '#f87171', fontSize: '0.8125rem' }}>{importError}</span>
+                  <button
+                    onClick={cancelImport}
+                    style={{
+                      background: 'none',
+                      border: 'none',
+                      color: '#888',
+                      cursor: 'pointer',
+                      fontSize: '1rem',
+                      fontFamily: 'inherit'
+                    }}
+                  >
+                    ✕
+                  </button>
+                </div>
+              )}
+
+              <p style={{ color: 'var(--text-muted)', fontSize: '0.75rem', marginTop: '0.75rem', marginBottom: 0, lineHeight: 1.5 }}>
+                Your data is stored locally in your browser. Backups help protect against browser data loss, and let you transfer settings between devices.
+              </p>
             </div>
           )}
         </div>

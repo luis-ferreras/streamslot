@@ -801,8 +801,7 @@ function Dashboard() {
 
   return (
     <div className={`dashboard theme-${theme}`} style={{
-      height: '100vh',
-      overflow: 'hidden',
+      minHeight: '100vh',
       fontFamily: "'Space Mono', monospace",
       textTransform: 'uppercase',
       letterSpacing: '0.02em'
@@ -838,20 +837,29 @@ function Dashboard() {
           -moz-text-size-adjust: 100%;
           text-size-adjust: 100%;
           line-height: 1.15;
-          height: 100vh;
-          overflow: hidden;
+          height: 100%;
+          min-height: 100vh;
+          overflow-x: hidden;
+          overflow-y: auto;
         }
-        
+
         body {
           margin: 0;
           padding: 0;
-          min-width: 37.5rem;
           min-height: 100vh;
-          height: 100vh;
-          overflow: hidden;
+          height: 100%;
+          overflow-x: hidden;
+          overflow-y: auto;
           -webkit-font-smoothing: antialiased;
           -moz-osx-font-smoothing: grayscale;
           text-rendering: optimizeLegibility;
+        }
+
+        @media (min-width: 37.5rem) {
+          html, body {
+            overflow: hidden;
+            height: 100vh;
+          }
         }
         
         img, picture, video, canvas, svg {
@@ -1780,12 +1788,21 @@ select option {
 
           .main-container {
             margin-top: 0 !important;
-            height: 100vh !important;
+            min-height: 100vh !important;
+            height: auto !important;
           }
 
           .main-container.scene-visible {
             margin-top: ${sceneHeight}rem !important;
-            height: calc(100vh - ${sceneHeight}rem) !important;
+            min-height: calc(100vh - ${sceneHeight}rem) !important;
+            height: auto !important;
+          }
+
+          .dashboard {
+            overflow-y: auto !important;
+            overflow-x: hidden !important;
+            height: auto !important;
+            min-height: 100vh !important;
           }
 
           /* Touch-friendly control items */
